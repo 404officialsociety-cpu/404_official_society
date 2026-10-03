@@ -1,0 +1,1 @@
+{ "name": "404-society", "private": true, "type": "module", "scripts": { "test": "node --test tests/util.test.mjs" } }

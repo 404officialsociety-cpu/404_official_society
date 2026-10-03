@@ -1,0 +1,8 @@
+name = "404-society"
+compatibility_date = "2025-09-01"
+pages_build_output_dir = "public"
+
+# Create the KV namespace (README step 5), then uncomment and paste its id:
+# [[kv_namespaces]]
+# binding = "ORDERS"
+# id = "PASTE_KV_NAMESPACE_ID"

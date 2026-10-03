@@ -1,0 +1,15 @@
+import { shopify } from '../_lib/shopify.js';
+import { json } from '../_lib/util.js';
+const Q = `{ products(first: 60, sortKey: CREATED_AT, reverse: true) { nodes {
+  handle title description tags availableForSale featuredImage { url altText }
+  collections(first: 3) { nodes { handle } }
+  variants(first: 50) { nodes { id title availableForSale price { amount } compareAtPrice { amount } selectedOptions { name value } } } } } }`;
+export async function onRequestGet({ env }) {
+  try {
+    const d = await shopify(env, Q);
+    return json({ products: d.products.nodes }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' });
+  } catch (e) {
+    console.error(String(e));
+    return json({ error: 'products_unavailable' }, 503);
+  }
+}
