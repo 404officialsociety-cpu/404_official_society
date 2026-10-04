@@ -12,3 +12,4 @@ run_worker_first = ["/api/*", "/sitemap.xml"]
 [[kv_namespaces]]
 binding = "ORDERS"
 id = "75a28a05b6bc4adebf1943a842695567"
+
