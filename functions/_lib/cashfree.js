@@ -18,12 +18,11 @@ async function syncShopify(env, o) {
   catch (e) { console.error(String(e)); o.shopifySync = 'FAILED'; }
   return true;
 }
-// Server-side verification: asks Cashfree directly, never trusts the browser.
 export async function settle(env, id, failedHint = false) {
   const raw = await env.ORDERS.get('order:' + id);
   if (!raw) return null;
   const o = JSON.parse(raw);
-  if (o.orderStatus === 'PAID') { // retry a failed Shopify sync on later visits/webhooks
+  if (o.orderStatus === 'PAID') {
     if (o.shopifySync === 'FAILED' && await syncShopify(env, o)) await env.ORDERS.put('order:' + id, JSON.stringify(o));
     return o;
   }
