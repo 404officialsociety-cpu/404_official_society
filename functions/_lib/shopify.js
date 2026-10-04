@@ -6,7 +6,6 @@ export async function shopify(env, query, variables = {}) {
     headers: { 'content-type': 'application/json', 'X-Shopify-Storefront-Access-Token': env.SHOPIFY_STOREFRONT_ACCESS_TOKEN },
     body: JSON.stringify({ query, variables })
   });
-  const j = await r.json();
   if (r.status === 401 || r.status === 403) throw new Error('shopify_auth');
   if (!r.ok) throw new Error('shopify_http_' + r.status);
   const j = await r.json();
@@ -14,7 +13,6 @@ export async function shopify(env, query, variables = {}) {
   return j.data;
 }
 
-// Creates the paid order in Shopify Admin so you can fulfil it. Needs SHOPIFY_ADMIN_ACCESS_TOKEN (scope: write_orders). Server-side only.
 export async function createShopifyOrder(env, o) {
   if (!env.SHOPIFY_ADMIN_ACCESS_TOKEN || !env.SHOPIFY_STORE_DOMAIN) return null;
   const a = o.shippingAddress, [first, ...rest] = a.name.split(' ');
@@ -34,4 +32,4 @@ export async function createShopifyOrder(env, o) {
   const j = await r.json(), res = j?.data?.orderCreate;
   if (!r.ok || j.errors || !res?.order || res.userErrors?.length) throw new Error('shopify_order_sync_failed ' + JSON.stringify(res?.userErrors || j.errors || r.status));
   return res.order.id;
-}
+    }
