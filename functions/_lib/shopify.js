@@ -7,7 +7,10 @@ export async function shopify(env, query, variables = {}) {
     body: JSON.stringify({ query, variables })
   });
   const j = await r.json();
-  if (!r.ok || j.errors) throw new Error('shopify_error');
+  if (r.status === 401 || r.status === 403) throw new Error('shopify_auth');
+  if (!r.ok) throw new Error('shopify_http_' + r.status);
+  const j = await r.json();
+  if (j.errors) throw new Error('shopify_graphql');
   return j.data;
 }
 
