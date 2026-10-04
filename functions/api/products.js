@@ -10,6 +10,6 @@ export async function onRequestGet({ env }) {
     return json({ products: d.products.nodes }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' });
   } catch (e) {
     console.error(String(e));
-    return json({ error: 'products_unavailable' }, 503);
+    return json({ error: 'products_unavailable', reason: String(e.message).split(' ')[0].slice(0, 40) }, 503);
   }
 }
