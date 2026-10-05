@@ -19,6 +19,6 @@ export async function onRequestGet({ request, env }) {
     return new Response(null, { status: 302, headers: h });
   } catch (e) {
     console.error(String(e));
-    return new Response('Login failed. Please try again.', { status: 400, headers: { 'set-cookie': clear } });
+    return new Response('Login failed (' + String(e.message).slice(0, 40) + ')', { status: 400, headers: { 'set-cookie': clear } });
   }
 }
