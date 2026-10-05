@@ -2,7 +2,7 @@ import { shopify } from '../_lib/shopify.js';
 import { cfBase, cfHeaders } from '../_lib/cashfree.js';
 import { getUser, json, sameOrigin, rateLimit, fail } from '../_lib/util.js';
 
-const Q = `query($ids:[ID!]!){ nodes(ids:$ids){ ... on ProductVariant { id title availableForSale price{amount} product{ title } } } }`;
+const Q = `query($ids:[ID!]!){ nodes(ids:$ids){ ... on ProductVariant { id title availableForSale price product{ title } } } }`;
 const str = (v, min, max) => typeof v === 'string' && v.trim().length >= min && v.trim().length <= max;
 
 export async function onRequestPost(ctx) {
@@ -21,14 +21,13 @@ export async function onRequestPost(ctx) {
     return json({ error: 'invalid_cart', message: 'Your cart could not be verified.' }, 400);
 
   try {
-    // Prices always come from Shopify, never from the browser.
     const d = await shopify(env, Q, { ids: [...new Set(items.map(i => i.id))] });
     const map = new Map(d.nodes.filter(Boolean).map(n => [n.id, n]));
     let paise = 0; const lines = [];
     for (const i of items) {
       const v = map.get(i.id);
       if (!v || !v.availableForSale) return json({ error: 'unavailable', message: 'An item in your cart is no longer available.' }, 409);
-      const p = Math.round(parseFloat(v.price.amount) * 100);
+      const p = Math.round(parseFloat(v.price) * 100);
       paise += p * i.q;
       lines.push({ variantId: v.id, product: v.product.title, variant: v.title, quantity: i.q, unitPrice: p / 100 });
     }
