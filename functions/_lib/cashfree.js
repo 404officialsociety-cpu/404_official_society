@@ -13,7 +13,7 @@ export async function cfGetOrder(env, id) {
   return r.json();
 }
 async function syncShopify(env, o) {
-  if (o.shopifyOrderId || !env.SHOPIFY_ADMIN_ACCESS_TOKEN) return false;
+  if (o.shopifyOrderId || !env.SHOPIFY_CLIENT_SECRET) return false;
   try { o.shopifyOrderId = await createShopifyOrder(env, o); o.shopifySync = 'OK'; }
   catch (e) { console.error(String(e)); o.shopifySync = 'FAILED'; }
   return true;
