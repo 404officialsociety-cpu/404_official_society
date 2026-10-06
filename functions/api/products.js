@@ -1,13 +1,15 @@
 import { shopify } from '../_lib/shopify.js';
 import { json } from '../_lib/util.js';
-const Q = `{ products(first: 60, sortKey: CREATED_AT, reverse: true, query: "status:active") { nodes {
+const Q = img => `{ products(first: 60, sortKey: CREATED_AT, reverse: true, query: "status:active") { nodes {
   handle title description tags
   featuredMedia { preview { image { url altText } } }
   collections(first: 3) { nodes { handle } }
-  variants(first: 50) { nodes { id title availableForSale price compareAtPrice image { url } selectedOptions { name value } } } } } }`;
+  variants(first: 50) { nodes { id title availableForSale price compareAtPrice ${img} selectedOptions { name value } } } } } }`;
 export async function onRequestGet({ env }) {
   try {
-    const d = await shopify(env, Q);
+    let d;
+    try { d = await shopify(env, Q('image { url }')); }
+    catch (e) { if (e.message !== 'shopify_graphql') throw e; d = await shopify(env, Q('')); }
     const products = d.products.nodes.map(p => ({
       ...p,
       featuredImage: p.featuredMedia?.preview?.image || null,
