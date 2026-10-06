@@ -70,7 +70,7 @@ const demo=[
 const shape=n=>{const vs=n.variants.nodes,pr=vs.map(v=>+v.price.amount),cp=vs.map(v=>+(v.compareAtPrice?.amount||0)),p=Math.min(...pr),c=Math.max(...cp);
 return{h:n.handle,n:n.title,d:n.description,img:n.featuredImage?.url,alt:n.featuredImage?.altText,p,c:c>p?c:0,col:n.collections.nodes[0]?.handle||'shop',new:n.tags.includes('new'),best:n.tags.includes('bestseller'),
 v:vs.map(v=>({id:v.id,t:v.title,o:Object.fromEntries(v.selectedOptions.map(o=>[o.name,o.value])),img:v.image?.url||'',a:v.availableForSale,p:+v.price.amount}))}};
-let P=demo,live=false,user=null,sel={},cart=[],WL=[],ADDR={};
+let P=demo,live=false,user=null,sel={},cart=[],WL=[],ADDR={},dbg='';
 try{cart=JSON.parse(localStorage.getItem('c404')||'[]');WL=JSON.parse(localStorage.getItem('w404')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('c404',JSON.stringify(cart));localStorage.setItem('w404',JSON.stringify(WL))}catch(e){}$('#cc').textContent=cart.reduce((a,b)=>a+b.q,0)};
 const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200)};
@@ -134,8 +134,8 @@ async function route0(){const [,a,b]=location.pathname.split('/');let h;
 if(!a)h=home();else if(a==='shop')h=shop(b);else if(a==='collections')h=shell('Collections',`<div class="col">${cols().map(c=>`<a href="/shop/${esc(c)}">${esc(cap(c))}</a>`).join('')}</div>`);
 else if(a==='p')h=product(b);else if(a==='cart'||a==='checkout')h=cartV();else if(a==='login'||a==='account'||a==='orders')h=await acct();else if(a==='search')h=searchV();else if(a==='wishlist')h=wishV();else if(a==='order')h=await orderV(b);
 else if(a==='about')h=shell(...pages.about);else if(a==='page'&&pages[b])h=shell(...pages[b]);else h=nf();
-app.innerHTML=h;scrollTo(0,0);
+app.innerHTML=(location.search.includes('debug')?`<div class="note" style="margin:16px 5vw">Debug: ${live?'live Shopify products loaded':'DEMO products. Reason: '+esc(dbg)}</div>`:'')+h;scrollTo(0,0);
 const p=a==='p'&&P.find(x=>x.h===b);
 seo(p?p.n+' — 404 Society':'404 Society — Wear Your Identity',p?(p.d||p.n).slice(0,155):'Contemporary essentials for those who define their own style.',p?{'@context':'https://schema.org','@type':'Product',name:p.n,description:p.d,image:p.img?[p.img]:undefined,offers:{'@type':'Offer',priceCurrency:'INR',price:String(p.p),availability:p.v.some(v=>v.a)?'https://schema.org/InStock':'https://schema.org/OutOfStock',url:location.origin+location.pathname}}:null)}
 addEventListener('popstate',route);
-document.addEventListener('click',async e=>{const t=e.target,d=t.dataset;const lk=t.closest&&t.closest('a[href^="/"]');if(lk&&!lk.getAttribute('href').startsWith('/api/')&&!e.metaKey&&!e.ctrlKey){e.preventDefault();history.pushState(null,'',
+document.addEventListener('click',async e=>{const t=e.target,d=t
