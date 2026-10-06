@@ -128,7 +128,9 @@ const searchV=()=>{const q=(new URLSearchParams(location.search).get('q')||'').t
 const wishV=()=>shell('Wishlist',`<div class="grid">${P.filter(p=>WL.includes(p.h)).map(card).join('')||'<p>Nothing saved yet.</p>'}</div>`);
 function seo(t,d,ld){document.title=t;const m=(s,v)=>{const e=$(s);if(e)e.setAttribute(s.includes('name=')?'content':'content',v)};m('meta[name=description]',d);m('meta[property="og:title"]',t);m('meta[property="og:description"]',d);
 const u=location.origin+location.pathname;$('#cn').href=u;m('meta[property="og:url"]',u);$('#ld').textContent=ld?JSON.stringify(ld):''}
-async function route(){const [,a,b]=location.pathname.split('/');let h;
+const tf=(u,ms=6000)=>{const c=new AbortController();setTimeout(()=>c.abort(),ms);return fetch(u,{signal:c.signal})};
+async function route(){try{await route0()}catch(e){console.error(e);app.innerHTML=shell('Something went wrong',`<p>Please refresh the page.</p><p style="color:var(--mut);font-size:14px">${esc(e.message)}</p>`)}}
+async function route0(){const [,a,b]=location.pathname.split('/');let h;
 if(!a)h=home();else if(a==='shop')h=shop(b);else if(a==='collections')h=shell('Collections',`<div class="col">${cols().map(c=>`<a href="/shop/${esc(c)}">${esc(cap(c))}</a>`).join('')}</div>`);
 else if(a==='p')h=product(b);else if(a==='cart'||a==='checkout')h=cartV();else if(a==='login'||a==='account'||a==='orders')h=await acct();else if(a==='search')h=searchV();else if(a==='wishlist')h=wishV();else if(a==='order')h=await orderV(b);
 else if(a==='about')h=shell(...pages.about);else if(a==='page'&&pages[b])h=shell(...pages[b]);else h=nf();
@@ -136,6 +138,4 @@ app.innerHTML=h;scrollTo(0,0);
 const p=a==='p'&&P.find(x=>x.h===b);
 seo(p?p.n+' — 404 Society':'404 Society — Wear Your Identity',p?(p.d||p.n).slice(0,155):'Contemporary essentials for those who define their own style.',p?{'@context':'https://schema.org','@type':'Product',name:p.n,description:p.d,image:p.img?[p.img]:undefined,offers:{'@type':'Offer',priceCurrency:'INR',price:String(p.p),availability:p.v.some(v=>v.a)?'https://schema.org/InStock':'https://schema.org/OutOfStock',url:location.origin+location.pathname}}:null)}
 addEventListener('popstate',route);
-document.addEventListener('click',async e=>{const t=e.target,d=t.dataset;const lk=t.closest&&t.closest('a[href^="/"]');if(lk&&!lk.getAttribute('href').startsWith('/api/')&&!e.metaKey&&!e.ctrlKey){e.preventDefault();history.pushState(null,'',lk.getAttribute('href'));route();return}
-if(d.o){const p=P.find(x=>x.h===location.pathname.split('/')[2]);sel[d.o]=d.ov;document.querySelectorAll('[data-o]').forEach(b=>{b.setAttribute('aria-pressed',sel[b.dataset.o]===b.dataset.ov);b.disabled=!okOpt(p,b.dataset.o,b.dataset.ov)});$('#pimg').innerHTML=imv(p,chosen(p))}
-if(t.id==='
+document.addEventListener('click',async e=>{const t=e.target,d=t.dataset;const lk=t.closest&&t.closest('a[href^="/"]');if(lk&&!lk.getAttribute('href').startsWith('/api/')&&!e.metaKey&&!e.ctrlKey){e.preventDefault();history.pushState(null,'',
