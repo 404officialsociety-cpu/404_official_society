@@ -23,7 +23,7 @@ export async function shopify(env, query, variables = {}) {
   if (r.status === 401 || r.status === 403) { await env.ORDERS.delete('shopify_token'); throw new Error('shopify_auth'); }
   if (!r.ok) throw new Error('shopify_http_' + r.status);
   const j = await r.json();
-  if (j.errors) throw new Error('shopify_graphql');
+  if (j.errors) throw new Error('shopify_graphql ' + JSON.stringify(j.errors).slice(0, 300));
   return j.data;
 }
 
