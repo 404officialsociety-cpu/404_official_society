@@ -4,7 +4,7 @@ const Q = `{ products(first: 60, sortKey: CREATED_AT, reverse: true, query: "sta
   handle title description tags
   featuredMedia { preview { image { url altText } } }
   collections(first: 3) { nodes { handle } }
-  variants(first: 50) { nodes { id title availableForSale price compareAtPrice selectedOptions { name value } } } } } }`;
+  variants(first: 50) { nodes { id title availableForSale price compareAtPrice image { url } selectedOptions { name value } } } } } }`;
 export async function onRequestGet({ env }) {
   try {
     const d = await shopify(env, Q);
