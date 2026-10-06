@@ -8,6 +8,7 @@ const Q = img => `{ products(first: 60, sortKey: CREATED_AT, reverse: true, quer
 export async function onRequestGet({ env }) {
   try {
     let d;
+    // If Shopify rejects the variant image field, still load products with their main photo.
     try { d = await shopify(env, Q('image { url }')); }
     catch (e) { if (!String(e.message).startsWith('shopify_graphql')) throw e; d = await shopify(env, Q('')); }
     const products = d.products.nodes.map(p => ({
@@ -18,7 +19,6 @@ export async function onRequestGet({ env }) {
     return json({ products }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' });
   } catch (e) {
     console.error(String(e));
-    const reason = env.DEBUG === '1' ? String(e.message).slice(0, 300) : String(e.message).split(' ')[0].slice(0, 40);
-    return json({ error: 'products_unavailable', reason }, 503);
+    return json({ error: 'products_unavailable', reason: env.DEBUG === '1' ? String(e.message).slice(0, 300) : String(e.message).split(' ')[0].slice(0, 40) }, 503);
   }
 }
