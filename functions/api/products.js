@@ -9,7 +9,7 @@ export async function onRequestGet({ env }) {
   try {
     let d;
     try { d = await shopify(env, Q('image { url }')); }
-    catch (e) { if (e.message !== 'shopify_graphql') throw e; d = await shopify(env, Q('')); }
+    catch (e) { if (!String(e.message).startsWith('shopify_graphql')) throw e; d = await shopify(env, Q('')); }
     const products = d.products.nodes.map(p => ({
       ...p,
       featuredImage: p.featuredMedia?.preview?.image || null,
@@ -18,6 +18,7 @@ export async function onRequestGet({ env }) {
     return json({ products }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' });
   } catch (e) {
     console.error(String(e));
-    return json({ error: 'products_unavailable', reason: String(e.message).split(' ')[0].slice(0, 40) }, 503);
+    const reason = env.DEBUG === '1' ? String(e.message).slice(0, 300) : String(e.message).split(' ')[0].slice(0, 40);
+    return json({ error: 'products_unavailable', reason }, 503);
   }
 }
