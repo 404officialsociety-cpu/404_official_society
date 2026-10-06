@@ -47,10 +47,13 @@ footer div{display:flex;flex-direction:column;gap:6px}footer b{color:var(--fg)}
 <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 </head>
 <body>
+<script>function __e(m){var a=document.getElementById('app');if(a&&(!a.innerHTML.trim()||a.innerHTML.indexOf('Loading')>-1))a.innerHTML='<section><p>Page error: '+String(m).replace(/</g,'&lt;')+'</p></section>'}
+addEventListener('error',function(e){__e(e.message||e.error)});addEventListener('unhandledrejection',function(e){__e((e.reason&&e.reason.message)||e.reason)});</script>
+<noscript><p style="padding:24px">Please turn on JavaScript.</p></noscript>
 <header><a class="logo" href="/">404 SOCIETY</a>
 <nav aria-label="Main"><a href="/shop">Shop</a><a href="/search">Search</a><a class="hide" href="/collections">Collections</a><a class="hide" href="/about">About</a><a class="hide" href="/wishlist">Wishlist</a><a href="/login">Account</a><a href="/cart">Cart (<span id="cc">0</span>)</a></nav></header>
 <main id="app" tabindex="-1"></main>
-<footer><div><b>404 Society</b><span>Wear Your Identity</span></div>
+<footer><div><b>404 Society</b><span>Wear Your Identity</span><small>build 9</small></div>
 <div><b>Help</b><a href="/page/shipping">Shipping</a><a href="/page/refund">Refunds</a><a href="/page/faq">FAQ</a></div>
 <div><b>Legal</b><a href="/page/privacy">Privacy</a><a href="/page/terms">Terms</a><a href="/page/contact">Contact</a></div>
 <form id="nl" style="max-width:320px"><b style="color:var(--fg)">Newsletter</b><label for="em">Email for drops and restocks</label><input id="em" type="email" required placeholder="you@email.com"><button class="btn" style="margin:0">Subscribe</button></form></footer>
@@ -134,8 +137,6 @@ async function route0(){const [,a,b]=location.pathname.split('/');let h;
 if(!a)h=home();else if(a==='shop')h=shop(b);else if(a==='collections')h=shell('Collections',`<div class="col">${cols().map(c=>`<a href="/shop/${esc(c)}">${esc(cap(c))}</a>`).join('')}</div>`);
 else if(a==='p')h=product(b);else if(a==='cart'||a==='checkout')h=cartV();else if(a==='login'||a==='account'||a==='orders')h=await acct();else if(a==='search')h=searchV();else if(a==='wishlist')h=wishV();else if(a==='order')h=await orderV(b);
 else if(a==='about')h=shell(...pages.about);else if(a==='page'&&pages[b])h=shell(...pages[b]);else h=nf();
-app.innerHTML=(location.search.includes('debug')?`<div class="note" style="margin:16px 5vw">Debug: ${live?'live Shopify products loaded':'DEMO products. Reason: '+esc(dbg)}</div>`:'')+h;scrollTo(0,0);
+app.innerHTML=(location.search.includes('debug')||!live?`<div class="note" style="margin:16px 5vw">${live?'Debug: live Shopify products loaded':'Showing demo products. Reason: '+esc(dbg||'still loading')}</div>`:'')+h;scrollTo(0,0);
 const p=a==='p'&&P.find(x=>x.h===b);
-seo(p?p.n+' — 404 Society':'404 Society — Wear Your Identity',p?(p.d||p.n).slice(0,155):'Contemporary essentials for those who define their own style.',p?{'@context':'https://schema.org','@type':'Product',name:p.n,description:p.d,image:p.img?[p.img]:undefined,offers:{'@type':'Offer',priceCurrency:'INR',price:String(p.p),availability:p.v.some(v=>v.a)?'https://schema.org/InStock':'https://schema.org/OutOfStock',url:location.origin+location.pathname}}:null)}
-addEventListener('popstate',route);
-document.addEventListener('click',async e=>{const t=e.target,d=t
+seo(p?p.n+' — 404 Society':'404 Society — Wear Yo
