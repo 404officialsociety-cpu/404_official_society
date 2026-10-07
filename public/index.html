@@ -91,7 +91,7 @@ contact:['Contact','Write to hello@404society.example. We reply within two worki
 faq:['FAQ','Delivery: 3–7 working days across India. Returns: within 7 days, unworn with tags.'],
 privacy:['Privacy Policy','Placeholder. Replace with your reviewed policy before launch.'],
 terms:['Terms','Placeholder. Replace with legally reviewed terms before launch.'],
-shipping:['Shipping Policy','Shipping is free on orders up to ₹2,000. Orders above ₹2,000 have a ₹69 shipping charge.'],
+shipping:['Shipping Policy','Free shipping over ₹5,000, otherwise ₹99. Confirm your rates.'],
 refund:['Refund Policy','Returns within 7 days for unworn items. Confirm your terms.']};
 const shell=(h,b)=>`<section><div class="hd"><h2>${h}</h2></div>${b}</section>`;
 const pick=(f)=>{const l=P.filter(f);return (l.length?l:P).slice(0,4)};
@@ -108,7 +108,7 @@ document.title=p.n+' — 404 Society';
 return `<section><div class="pd"><div class="pimg" id="pimg" style="font-size:90px">${imv(p,chosen(p))}</div><div><h1 style="font-size:clamp(32px,5vw,56px)">${esc(p.n)}</h1><p style="font-size:20px;margin:16px 0">${inr(p.p)}${p.c?`<s>${inr(p.c)}</s>`:''}</p><p style="color:var(--mut);max-width:44ch">${esc(p.d)}</p>${optsOf(p).map(([k,vals])=>`<label style="margin-top:24px">${esc(k)}</label><div class="sz" role="group" aria-label="${esc(k)}">${vals.map(x=>`<button aria-pressed="${sel[k]===x}" data-o="${esc(k)}" data-ov="${esc(x)}" ${okOpt(p,k,x)?'':'disabled'}>${esc(x)}</button>`).join('')}</div>`).join('')}<button class="btn" id="add" data-h="${esc(p.h)}">Add to cart</button><button class="btn o" id="wish" data-h="${esc(p.h)}">${WL.includes(p.h)?'Saved':'Wishlist'}</button></div></div></section>`}
 const line=i=>{const p=P.find(x=>x.h===i.h),v=p?.v.find(x=>x.t===(i.t??i.s));return p&&v?{p,v}:null};
 function cartV(){cart=cart.filter(line);if(!cart.length)return shell('Cart','<p>Your cart is empty.</p><a class="btn" href="/shop">Start shopping</a>');
-const sub=cart.reduce((a,i)=>a+line(i).v.p*i.q,0),sh=sub>2000?69:0;
+const sub=cart.reduce((a,i)=>a+line(i).v.p*i.q,0),sh=sub>=5000?0:99;
 const AF={an:'name',ap:'phone',al:'line1',ac:'city',as:'state',az:'pin'};const f=(id,l)=>`<label for="${id}">${l}</label><input id="${id}" value="${esc(ADDR[AF[id]]||'')}">`;
 return shell('Cart',cart.map((i,k)=>{const {p,v}=line(i);return `<div class="row"><div style="display:flex;gap:14px;align-items:center"><div style="width:64px;height:80px;flex:none;background:var(--card);font-size:14px;line-height:80px;text-align:center;overflow:hidden">${imv(p,v)}</div><div><b>${esc(p.n)}</b><br><small style="color:var(--mut)">${esc(v.t==='Default Title'?'':v.t)} · ${inr(v.p)}</small></div></div><div class="qty"><button data-q="${k}" data-d="-1" aria-label="Decrease">−</button> ${i.q} <button data-q="${k}" data-d="1" aria-label="Increase">+</button> <button data-r="${k}" style="width:auto;padding:0 10px">Remove</button></div></div>`}).join('')+
 `<div class="row"><span>Subtotal</span><b>${inr(sub)}</b></div><div class="row"><span>Shipping</span><b>${sh?inr(sh):'Free'}</b></div><div class="row"><span>Total</span><b>${inr(sub+sh)}</b></div>`+
@@ -139,4 +139,4 @@ else if(a==='p')h=product(b);else if(a==='cart'||a==='checkout')h=cartV();else i
 else if(a==='about')h=shell(...pages.about);else if(a==='page'&&pages[b])h=shell(...pages[b]);else h=nf();
 app.innerHTML=(location.search.includes('debug')||!live?`<div class="note" style="margin:16px 5vw">${live?'Debug: live Shopify products loaded':'Showing demo products. Reason: '+esc(dbg||'still loading')}</div>`:'')+h;scrollTo(0,0);
 const p=a==='p'&&P.find(x=>x.h===b);
-seo(p?p.n+' — 404 Socie
+seo(p?p.n+' — 404 Society':'404 Society — Wear Yo
