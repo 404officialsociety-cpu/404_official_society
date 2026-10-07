@@ -31,7 +31,7 @@ export async function onRequestPost(ctx) {
       paise += p * i.q;
       lines.push({ variantId: v.id, product: v.product.title, variant: v.title, quantity: i.q, unitPrice: p / 100 });
     }
-    const shipPaise = paise >= 500000 ? 0 : 9900;
+    const shipPaise = paise > 200000 ? 6900 : 0;
     const total = (paise + shipPaise) / 100;
     const id = 'ORD_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
     const site = env.PUBLIC_SITE_URL || new URL(request.url).origin;
